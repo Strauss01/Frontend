@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx",
+    "hooks/**/*.ts",
+    "features/**/*.ts",
+    "features/**/*.tsx",
+    "components/**/*.tsx",
+    "lib/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}
