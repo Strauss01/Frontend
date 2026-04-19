@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/api";
+import { apiClient } from "@/lib/axios";
 
 // ─── Search ──────────────────────────────────────────────────────────────────
 export const searchCases = (q: string, court?: string, limit = 10) =>
