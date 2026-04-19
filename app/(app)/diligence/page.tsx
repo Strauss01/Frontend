@@ -99,7 +99,7 @@ export default function DiligencePage() {
 
   // Fetch available documents on mount
   useEffect(() => {
-    fetch("/api/v1/documents", { credentials: "include" })
+    fetch("/api/v1/documents/list", { credentials: "include" })
       .then((r) => r.json())
       .then((data) => setDocuments(Array.isArray(data) ? data : []))
       .catch(() => setDocuments([]));
