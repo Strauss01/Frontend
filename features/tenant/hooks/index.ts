@@ -1,8 +1,1 @@
-export {
-  useTenant,
-  useTenantMembers,
-  useUpdateTenant,
-  useInviteMember,
-  useRemoveMember,
-  useRegenerateApiKey,
-} from "./useTenant";
+export { useTenant, useTenantMembers, useUpdateTenant, useInviteMember, useRemoveMember, useRegenerateApiKey } from "./useTenant";
