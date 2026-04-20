@@ -24,9 +24,9 @@ const NAV_SECTIONS = [
   {
     label: "SA Research",
     items: [
-      { href: "/caselaw",   label: "Case Law",          icon: BookOpen  },
-      { href: "/gazette",   label: "Government Gazette", icon: Newspaper },
-      { href: "/diligence", label: "Due Diligence",      icon: Shield    },
+      { href: "/caselaw",   label: "Case Law",           icon: BookOpen  },
+      { href: "/gazette",   label: "Government Gazette",  icon: Newspaper },
+      { href: "/diligence", label: "Due Diligence",       icon: Shield    },
     ],
   },
   {
@@ -115,12 +115,16 @@ export function Sidebar() {
                   href={href}
                   className={cn(
                     "relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group",
-                    active ? "nav-active bg-amber-50 text-amber-700" : "text-slate-500 hover:text-slate-900 hover:bg-amber-50/50"
+                    active
+                      ? "nav-active bg-amber-50 text-amber-700"
+                      : "text-slate-500 hover:text-slate-900 hover:bg-amber-50/50"
                   )}
                 >
                   <div className={cn(
                     "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
-                    active ? "bg-amber-100 text-amber-600" : "bg-slate-100 text-slate-400 group-hover:bg-amber-100 group-hover:text-amber-500"
+                    active
+                      ? "bg-amber-100 text-amber-600"
+                      : "bg-slate-100 text-slate-400 group-hover:bg-amber-100 group-hover:text-amber-500"
                   )}>
                     <Icon className="h-3.5 w-3.5" />
                   </div>
