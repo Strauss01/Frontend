@@ -1,1 +1,6 @@
-export { useDiligence, useDiligenceReport, useCreateDiligence } from "./useDiligence";
+export {
+  useDiligence,
+  useDiligenceReport,
+  useCreateDiligence,
+  useDeleteDiligence,
+} from "./useDiligence";
