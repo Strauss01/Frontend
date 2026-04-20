@@ -1,15 +1,15 @@
 "use client";
 
 import {
-  Users, Building2, BarChart3, Shield,
-  Search, MoreHorizontal, UserCheck,
-  UserX, Crown, Trash2, RefreshCw,
+  Users, Building2,
+  Search, Crown, Trash2,
   Activity, FileText, TrendingUp,
+  ServerCrash, CheckCircle2, AlertCircle,
 } from "lucide-react";
 import { useState } from "react";
-import { Badge }   from "@/components/ui/badge";
-import { Button }  from "@/components/ui/button";
-import { cn }      from "@/lib/utils";
+import { Badge }  from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { cn }     from "@/lib/utils";
 import {
   useAdminStats,
   useAdminUsers,
@@ -19,16 +19,16 @@ import {
 } from "@/features/admin/hooks";
 
 export default function AdminPage() {
-  const [tab,           setTab]   = useState<"users" | "tenants" | "system">("users");
-  const [userSearch,    setUserSearch]    = useState("");
-  const [tenantSearch,  setTenantSearch]  = useState("");
+  const [tab,          setTab]          = useState<"users" | "tenants" | "system">("users");
+  const [userSearch,   setUserSearch]   = useState("");
+  const [tenantSearch, setTenantSearch] = useState("");
 
   const { data: stats,   isLoading: statsLoading   } = useAdminStats();
   const { data: users,   isLoading: usersLoading   } = useAdminUsers();
   const { data: tenants, isLoading: tenantsLoading } = useAdminTenants();
 
-  const updateRole  = useUpdateUserRole();
-  const deleteUser  = useDeleteUser();
+  const updateRole = useUpdateUserRole();
+  const deleteUser = useDeleteUser();
 
   const filteredUsers = (users ?? []).filter((u: any) =>
     !userSearch || (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase())
@@ -59,31 +59,34 @@ export default function AdminPage() {
       {/* ── KPI strip ── */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {statsLoading
-          ? [...Array(4)].map((_, i) => <div key={i} className="skeleton h-32 rounded-2xl" />)
-          : [
+          ? [...Array(4)].map((_, i) => (
+              <div key={i} className="skeleton h-32 rounded-2xl" />
+            ))
+          : (
+            [
               {
                 label: "Total Users",
                 value: stats?.total_users ?? "—",
                 sub:   stats?.users_delta ?? "",
-                icon:  Users,     from: "from-indigo-500", to: "to-violet-600",  ring: "ring-indigo-100", bg: "bg-indigo-50",
+                icon:  Users,    from: "from-indigo-500", to: "to-violet-600", ring: "ring-indigo-100", bg: "bg-indigo-50",
               },
               {
                 label: "Active Workspaces",
                 value: stats?.total_tenants ?? "—",
                 sub:   stats?.tenants_delta ?? "",
-                icon:  Building2, from: "from-sky-500",    to: "to-cyan-500",    ring: "ring-sky-100",    bg: "bg-sky-50",
+                icon:  Building2, from: "from-sky-500", to: "to-cyan-500", ring: "ring-sky-100", bg: "bg-sky-50",
               },
               {
                 label: "Documents Processed",
                 value: stats?.total_documents ?? "—",
                 sub:   stats?.documents_delta ?? "",
-                icon:  FileText,  from: "from-emerald-500",to: "to-teal-500",    ring: "ring-emerald-100",bg: "bg-emerald-50",
+                icon:  FileText, from: "from-emerald-500", to: "to-teal-500", ring: "ring-emerald-100", bg: "bg-emerald-50",
               },
               {
                 label: "AI Queries (30d)",
                 value: stats?.ai_queries_30d ?? "—",
                 sub:   stats?.queries_delta ?? "",
-                icon:  Activity,  from: "from-amber-500",  to: "to-orange-500",  ring: "ring-amber-100",  bg: "bg-amber-50",
+                icon:  Activity, from: "from-amber-500", to: "to-orange-500", ring: "ring-amber-100", bg: "bg-amber-50",
               },
             ].map(({ label, value, sub, icon: Icon, from, to, ring, bg }) => (
               <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card card-hover">
@@ -99,7 +102,8 @@ export default function AdminPage() {
                 <p className="mt-0.5 text-sm text-slate-500">{label}</p>
                 {sub && <p className="mt-1.5 font-mono text-xs text-indigo-600">{sub}</p>}
               </div>
-            ))}
+            ))
+          )}
       </div>
 
       {/* ── Tabs ── */}
@@ -143,7 +147,9 @@ export default function AdminPage() {
 
           {usersLoading ? (
             <div className="space-y-3 p-5">
-              {[...Array(5)].map((_, i) => <div key={i} className="skeleton h-14 rounded-xl" />)}
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="skeleton h-14 rounded-xl" />
+              ))}
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -240,7 +246,9 @@ export default function AdminPage() {
 
           {tenantsLoading ? (
             <div className="space-y-3 p-5">
-              {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-14 rounded-xl" />)}
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="skeleton h-14 rounded-xl" />
+              ))}
             </div>
           ) : filteredTenants.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -258,11 +266,13 @@ export default function AdminPage() {
                     <Building2 className="h-5 w-5 text-indigo-600" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-slate-800">{tenant.name ?? "Unnamed workspace"}</p>
+                    <p className="text-sm font-semibold text-slate-800">
+                      {tenant.name ?? "Unnamed workspace"}
+                    </p>
                     <p className="mt-0.5 font-mono text-xs text-slate-400">
                       ID: {tenant.id}
                       {tenant.practice_type && ` · ${tenant.practice_type.replace(/_/g, " ")}`}
-                      {tenant.jurisdiction && ` · ${tenant.jurisdiction.replace(/_/g, " ")}`}
+                      {tenant.jurisdiction  && ` · ${tenant.jurisdiction.replace(/_/g, " ")}`}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
@@ -274,6 +284,55 @@ export default function AdminPage() {
                       <FileText className="h-3.5 w-3.5" />
                       {tenant.document_count ?? 0} doc{(tenant.document_count ?? 0) !== 1 ? "s" : ""}
                     </div>
-                    <Badge variant={tenant.is_active ? "success" : "secondary"} className="text-[10px]">
+                    <Badge
+                      variant={tenant.is_active ? "success" : "secondary"}
+                      className="text-[10px]"
+                    >
                       {tenant.is_active ? "Active" : "Inactive"}
                     </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── System tab ── */}
+      {tab === "system" && (
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-card overflow-hidden">
+          <div className="border-b border-slate-100 px-6 py-4">
+            <h2 className="font-serif text-lg font-semibold text-slate-900">System Health</h2>
+            <p className="mt-0.5 font-mono text-xs text-slate-400">Platform status and diagnostics</p>
+          </div>
+          <div className="divide-y divide-slate-50 p-3">
+            {[
+              { label: "API Gateway",        status: "operational" },
+              { label: "Database (Supabase)", status: "operational" },
+              { label: "AI Inference",        status: "operational" },
+              { label: "Document Storage",    status: "operational" },
+              { label: "Background Workers",  status: "degraded"    },
+            ].map(({ label, status }) => (
+              <div key={label} className="flex items-center justify-between rounded-xl px-4 py-3.5">
+                <div className="flex items-center gap-3">
+                  <ServerCrash className="h-4 w-4 text-slate-400" />
+                  <span className="text-sm font-medium text-slate-700">{label}</span>
+                </div>
+                <Badge
+                  variant={status === "operational" ? "success" : "warning"}
+                  className="text-[10px] flex items-center gap-1"
+                >
+                  {status === "operational"
+                    ? <CheckCircle2 className="h-2.5 w-2.5" />
+                    : <AlertCircle  className="h-2.5 w-2.5" />}
+                  {status}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
