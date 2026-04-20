@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FileText, ArrowRight, AlertCircle } from "lucide-react";
 import { useDocuments } from "@/features/documents/hooks";
 import { DropzoneUpload } from "@/features/documents/components/DropzoneUpload";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/glass-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
 
@@ -12,83 +12,113 @@ export default function DocumentsPage() {
   const { data: documents, isLoading, isError } = useDocuments();
 
   return (
-    <div className="space-y-8 animate-in">
+    <div className="space-y-10 animate-in">
+
+      {/* HEADER */}
       <div>
-        <p className="text-xs font-mono text-gold-400 tracking-widest uppercase mb-1">
+        <p className="text-xs font-mono text-yellow-400 tracking-widest uppercase mb-2">
           Documents
         </p>
-        <h1 className="font-serif text-3xl font-bold text-white">
-          Your Documents
+        <h1 className="font-serif text-4xl font-bold text-white">
+          Your Legal Documents
         </h1>
-        <p className="text-muted-foreground mt-1">
-          Upload legal documents and run AI analysis.
+        <p className="text-white/60 mt-2">
+          Upload, analyse, and extract legal intelligence from case files and contracts.
         </p>
       </div>
 
-      {/* Upload */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base font-sans font-semibold">
+      {/* UPLOAD ZONE */}
+      <GlassCard className="p-6">
+        <div className="mb-4">
+          <h2 className="text-base font-semibold text-white">
             Upload Document
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DropzoneUpload />
-        </CardContent>
-      </Card>
+          </h2>
+          <p className="text-sm text-white/50">
+            Drop files for AI legal analysis and precedent extraction
+          </p>
+        </div>
 
-      {/* List */}
+        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+          <DropzoneUpload />
+        </div>
+      </GlassCard>
+
+      {/* LIST SECTION */}
       <div className="space-y-4">
+
         <h2 className="font-serif text-xl font-semibold text-white">
-          All Documents
+          Case File Repository
         </h2>
 
-        {isLoading ? (
+        {/* LOADING */}
+        {isLoading && (
           <div className="space-y-3">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-16 rounded-lg" />
+              <GlassCard key={i} className="p-4">
+                <Skeleton className="h-6 w-full" />
+              </GlassCard>
             ))}
           </div>
-        ) : isError ? (
-          <Card>
-            <CardContent className="flex items-center gap-3 py-8 text-destructive">
-              <AlertCircle className="h-5 w-5 shrink-0" />
-              <p className="text-sm">Failed to load documents. Please refresh.</p>
-            </CardContent>
-          </Card>
-        ) : !documents || documents.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center py-14 text-center">
-              <FileText className="h-10 w-10 text-muted-foreground/40 mb-3" />
-              <p className="text-sm text-muted-foreground">
-                No documents yet — upload one above to get started.
+        )}
+
+        {/* ERROR */}
+        {isError && (
+          <GlassCard className="p-6 border-red-500/20">
+            <div className="flex items-center gap-3 text-red-300">
+              <AlertCircle className="h-5 w-5" />
+              <p className="text-sm">
+                Failed to load documents. Please refresh or retry ingestion.
               </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-2">
-            {documents.map((doc) => (
-              <Link
-                key={doc.id}
-                href={`/documents/${doc.id}`}
-                className="flex items-center justify-between px-5 py-4 rounded-lg border border-border bg-card hover:border-primary/40 hover:bg-accent transition-all group"
-              >
+            </div>
+          </GlassCard>
+        )}
+
+        {/* EMPTY STATE */}
+        {!isLoading && !isError && (!documents || documents.length === 0) && (
+          <GlassCard className="p-10 text-center">
+            <FileText className="h-10 w-10 mx-auto text-white/20 mb-3" />
+            <p className="text-sm text-white/60">
+              No legal documents indexed yet.
+            </p>
+            <p className="text-xs text-white/40 mt-1">
+              Upload a case file or statute to begin analysis.
+            </p>
+          </GlassCard>
+        )}
+
+        {/* DOCUMENT LIST */}
+        <div className="space-y-2">
+          {documents?.map((doc) => (
+            <Link
+              key={doc.id}
+              href={`/documents/${doc.id}`}
+              className="block"
+            >
+              <GlassCard className="p-4 flex items-center justify-between hover:scale-[1.01] transition-transform">
+
+                {/* LEFT */}
                 <div className="flex items-center gap-3 min-w-0">
-                  <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                    <FileText className="h-4 w-4 text-yellow-300" />
+                  </div>
+
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
+                    <p className="text-sm font-medium text-white truncate">
                       {doc.title}
                     </p>
-                    <p className="text-xs text-muted-foreground font-mono mt-0.5">
+                    <p className="text-xs text-white/40 font-mono">
                       ID {doc.id} · {formatDate(doc.created_at)}
                     </p>
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-              </Link>
-            ))}
-          </div>
-        )}
+
+                {/* RIGHT */}
+                <ArrowRight className="h-4 w-4 text-white/40 group-hover:text-yellow-300 transition-colors" />
+              </GlassCard>
+            </Link>
+          ))}
+        </div>
+
       </div>
     </div>
   );
