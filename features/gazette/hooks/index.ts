@@ -1,6 +1,1 @@
-export {
-  useGazette,
-  useGazetteIssue,
-  useGazetteSearch,
-  useBookmarkGazette,
-} from "./useGazette";
+export { useGazette, useGazetteIssue, useGazetteSearch, useBookmarkGazette } from "./useGazette";
