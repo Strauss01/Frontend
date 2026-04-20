@@ -1,120 +1,279 @@
 "use client";
 
+import {
+  Users, Building2, BarChart3, Shield,
+  Search, MoreHorizontal, UserCheck,
+  UserX, Crown, Trash2, RefreshCw,
+  Activity, FileText, TrendingUp,
+} from "lucide-react";
 import { useState } from "react";
-import { Users, Building2, FileText, BarChart3, Trash2, Shield } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAdminStats, listAllUsers, listAllTenants, updateUserRole, deleteUser } from "@/lib/services";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useMe } from "@/features/auth/hooks";
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { Badge }   from "@/components/ui/badge";
+import { Button }  from "@/components/ui/button";
+import { cn }      from "@/lib/utils";
+import {
+  useAdminStats,
+  useAdminUsers,
+  useAdminTenants,
+  useUpdateUserRole,
+  useDeleteUser,
+} from "@/features/admin/hooks";
 
 export default function AdminPage() {
-  const { data: user } = useMe();
-  const qc = useQueryClient();
+  const [tab,           setTab]   = useState<"users" | "tenants" | "system">("users");
+  const [userSearch,    setUserSearch]    = useState("");
+  const [tenantSearch,  setTenantSearch]  = useState("");
 
-  if (user && user.role !== "admin") redirect("/dashboard");
+  const { data: stats,   isLoading: statsLoading   } = useAdminStats();
+  const { data: users,   isLoading: usersLoading   } = useAdminUsers();
+  const { data: tenants, isLoading: tenantsLoading } = useAdminTenants();
 
-  const { data: stats } = useQuery({ queryKey: ["admin-stats"], queryFn: getAdminStats });
-  const { data: users } = useQuery({ queryKey: ["admin-users"], queryFn: listAllUsers });
-  const { data: tenants } = useQuery({ queryKey: ["admin-tenants"], queryFn: listAllTenants });
+  const updateRole  = useUpdateUserRole();
+  const deleteUser  = useDeleteUser();
 
-  const { mutate: changeRole } = useMutation({
-    mutationFn: ({ id, role }: { id: number; role: string }) => updateUserRole(id, role),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-users"] }); toast.success("Role updated"); },
-    onError: () => toast.error("Failed to update role"),
-  });
+  const filteredUsers = (users ?? []).filter((u: any) =>
+    !userSearch || (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase())
+  );
 
-  const { mutate: removeUser } = useMutation({
-    mutationFn: (id: number) => deleteUser(id),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-users"] }); toast.success("User deleted"); },
-    onError: () => toast.error("Failed to delete user"),
-  });
-
-  const STAT_CARDS = [
-    { label: "Total Users", value: stats?.total_users ?? "—", icon: Users },
-    { label: "Tenants", value: stats?.total_tenants ?? "—", icon: Building2 },
-    { label: "Documents", value: stats?.total_documents ?? "—", icon: FileText },
-    { label: "Analyses", value: stats?.total_analyses ?? "—", icon: BarChart3 },
-  ];
+  const filteredTenants = (tenants ?? []).filter((t: any) =>
+    !tenantSearch || (t.name ?? "").toLowerCase().includes(tenantSearch.toLowerCase())
+  );
 
   return (
-    <div className="space-y-8 animate-in">
-      <div>
-        <p className="text-xs font-mono text-gold-400 tracking-widest uppercase mb-1">Admin</p>
-        <h1 className="font-serif text-3xl font-bold text-white flex items-center gap-3">
-          <Shield className="h-7 w-7 text-primary" /> Admin Panel
-        </h1>
-        <p className="text-muted-foreground mt-1">Platform-wide management and statistics.</p>
+    <div className="mx-auto max-w-[1400px] space-y-6 p-6">
+
+      {/* ── Header ── */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="font-serif text-2xl font-semibold text-slate-900">Admin Panel</h1>
+            <Badge variant="warning" className="text-[10px]">
+              <Crown className="h-2.5 w-2.5" /> Super Admin
+            </Badge>
+          </div>
+          <p className="mt-0.5 text-sm text-slate-500">
+            Platform-wide management for Statura SA Legal Intelligence
+          </p>
+        </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {STAT_CARDS.map(({ label, value, icon: Icon }) => (
-          <Card key={label}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
-              <Icon className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold font-mono text-white">{value}</p>
-            </CardContent>
-          </Card>
+      {/* ── KPI strip ── */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {statsLoading
+          ? [...Array(4)].map((_, i) => <div key={i} className="skeleton h-32 rounded-2xl" />)
+          : [
+              {
+                label: "Total Users",
+                value: stats?.total_users ?? "—",
+                sub:   stats?.users_delta ?? "",
+                icon:  Users,     from: "from-indigo-500", to: "to-violet-600",  ring: "ring-indigo-100", bg: "bg-indigo-50",
+              },
+              {
+                label: "Active Workspaces",
+                value: stats?.total_tenants ?? "—",
+                sub:   stats?.tenants_delta ?? "",
+                icon:  Building2, from: "from-sky-500",    to: "to-cyan-500",    ring: "ring-sky-100",    bg: "bg-sky-50",
+              },
+              {
+                label: "Documents Processed",
+                value: stats?.total_documents ?? "—",
+                sub:   stats?.documents_delta ?? "",
+                icon:  FileText,  from: "from-emerald-500",to: "to-teal-500",    ring: "ring-emerald-100",bg: "bg-emerald-50",
+              },
+              {
+                label: "AI Queries (30d)",
+                value: stats?.ai_queries_30d ?? "—",
+                sub:   stats?.queries_delta ?? "",
+                icon:  Activity,  from: "from-amber-500",  to: "to-orange-500",  ring: "ring-amber-100",  bg: "bg-amber-50",
+              },
+            ].map(({ label, value, sub, icon: Icon, from, to, ring, bg }) => (
+              <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card card-hover">
+                <div className="mb-4 flex items-start justify-between">
+                  <div className={`rounded-xl p-2.5 ring-4 ${bg} ${ring}`}>
+                    <div className={`rounded-lg bg-gradient-to-br ${from} ${to} p-1.5`}>
+                      <Icon className="h-4 w-4 text-white" />
+                    </div>
+                  </div>
+                  <TrendingUp className="h-4 w-4 text-slate-300" />
+                </div>
+                <p className="font-mono text-2xl font-bold text-slate-900">{value}</p>
+                <p className="mt-0.5 text-sm text-slate-500">{label}</p>
+                {sub && <p className="mt-1.5 font-mono text-xs text-indigo-600">{sub}</p>}
+              </div>
+            ))}
+      </div>
+
+      {/* ── Tabs ── */}
+      <div className="flex gap-1 rounded-2xl border border-slate-200 bg-slate-50 p-1.5 w-fit">
+        {(["users", "tenants", "system"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={cn(
+              "rounded-xl px-5 py-2 text-sm font-medium transition-all duration-150 capitalize",
+              tab === t
+                ? "bg-white text-indigo-700 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            )}
+          >
+            {t}
+          </button>
         ))}
       </div>
 
-      {/* Users table */}
-      <Card>
-        <CardHeader><CardTitle className="text-base">All Users</CardTitle></CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {users?.map((u: any) => (
-              <div key={u.id} className="flex items-center justify-between px-4 py-3 rounded-lg border border-border bg-muted/10">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{u.email}</p>
-                  <p className="text-xs font-mono text-muted-foreground mt-0.5">tenant {u.tenant_id}</p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <select
-                    value={u.role}
-                    onChange={e => changeRole({ id: u.id, role: e.target.value })}
-                    className="text-xs font-mono bg-background border border-border rounded px-2 py-1 text-foreground"
-                  >
-                    <option value="lawyer">lawyer</option>
-                    <option value="admin">admin</option>
-                    <option value="client">client</option>
-                  </select>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 text-destructive hover:bg-destructive/10"
-                    onClick={() => { if (confirm(`Delete ${u.email}?`)) removeUser(u.id); }}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+      {/* ── Users tab ── */}
+      {tab === "users" && (
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+            <div>
+              <h2 className="font-serif text-lg font-semibold text-slate-900">All Users</h2>
+              <p className="mt-0.5 font-mono text-xs text-slate-400">
+                {usersLoading ? "Loading…" : `${users?.length ?? 0} registered users`}
+              </p>
+            </div>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                value={userSearch}
+                onChange={(e) => setUserSearch(e.target.value)}
+                placeholder="Search by email…"
+                className="h-9 rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-300 focus:bg-white transition-all w-60"
+              />
+            </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Tenants table */}
-      <Card>
-        <CardHeader><CardTitle className="text-base">All Tenants</CardTitle></CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {tenants?.map((t: any) => (
-              <div key={t.id} className="flex items-center justify-between px-4 py-3 rounded-lg border border-border bg-muted/10">
-                <p className="text-sm font-medium text-foreground">{t.name}</p>
-                <span className="text-xs font-mono text-muted-foreground">ID: {t.id}</span>
-              </div>
-            ))}
+          {usersLoading ? (
+            <div className="space-y-3 p-5">
+              {[...Array(5)].map((_, i) => <div key={i} className="skeleton h-14 rounded-xl" />)}
+            </div>
+          ) : filteredUsers.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <Users className="h-10 w-10 text-slate-300" />
+              <p className="mt-3 text-sm text-slate-400">No users found.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/60">
+                    {["User", "Role", "Workspace", "Joined", "Last active", ""].map((h) => (
+                      <th key={h} className="px-5 py-3 text-left font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {filteredUsers.map((user: any) => (
+                    <tr key={user.id} className="group hover:bg-slate-50 transition-colors">
+                      <td className="px-5 py-3.5">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-sm">
+                            <span className="font-mono text-[10px] font-bold text-white">
+                              {(user.email ?? "?").slice(0, 2).toUpperCase()}
+                            </span>
+                          </div>
+                          <span className="text-sm font-medium text-slate-800 max-w-[180px] truncate">
+                            {user.email}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <select
+                          value={user.role ?? "member"}
+                          onChange={(e) => updateRole.mutate({ userId: user.id, role: e.target.value })}
+                          className="h-8 cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-3 font-mono text-xs text-slate-600 focus:outline-none focus:border-indigo-300 transition-colors"
+                        >
+                          <option value="member">Member</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </td>
+                      <td className="px-4 py-3.5 font-mono text-xs text-slate-500">
+                        {user.tenant_name ?? `Tenant ${user.tenant_id}` ?? "—"}
+                      </td>
+                      <td className="px-4 py-3.5 font-mono text-xs text-slate-400">
+                        {user.created_at
+                          ? new Date(user.created_at).toLocaleDateString("en-ZA")
+                          : "—"}
+                      </td>
+                      <td className="px-4 py-3.5 font-mono text-xs text-slate-400">
+                        {user.last_active_at
+                          ? new Date(user.last_active_at).toLocaleDateString("en-ZA")
+                          : "—"}
+                      </td>
+                      <td className="px-3 py-3.5">
+                        <button
+                          onClick={() => deleteUser.mutate(user.id)}
+                          className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Tenants tab ── */}
+      {tab === "tenants" && (
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+            <div>
+              <h2 className="font-serif text-lg font-semibold text-slate-900">All Workspaces</h2>
+              <p className="mt-0.5 font-mono text-xs text-slate-400">
+                {tenantsLoading ? "Loading…" : `${tenants?.length ?? 0} active workspaces`}
+              </p>
+            </div>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                value={tenantSearch}
+                onChange={(e) => setTenantSearch(e.target.value)}
+                placeholder="Search workspaces…"
+                className="h-9 rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-300 focus:bg-white transition-all w-60"
+              />
+            </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+
+          {tenantsLoading ? (
+            <div className="space-y-3 p-5">
+              {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-14 rounded-xl" />)}
+            </div>
+          ) : filteredTenants.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <Building2 className="h-10 w-10 text-slate-300" />
+              <p className="mt-3 text-sm text-slate-400">No workspaces found.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-50 p-3">
+              {filteredTenants.map((tenant: any) => (
+                <div
+                  key={tenant.id}
+                  className="group flex items-center gap-4 rounded-xl px-4 py-3.5 hover:bg-slate-50 transition-colors"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 border border-indigo-100">
+                    <Building2 className="h-5 w-5 text-indigo-600" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-slate-800">{tenant.name ?? "Unnamed workspace"}</p>
+                    <p className="mt-0.5 font-mono text-xs text-slate-400">
+                      ID: {tenant.id}
+                      {tenant.practice_type && ` · ${tenant.practice_type.replace(/_/g, " ")}`}
+                      {tenant.jurisdiction && ` · ${tenant.jurisdiction.replace(/_/g, " ")}`}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-slate-500">
+                      <Users className="h-3.5 w-3.5" />
+                      {tenant.member_count ?? 0} member{(tenant.member_count ?? 0) !== 1 ? "s" : ""}
+                    </div>
+                    <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-slate-500">
+                      <FileText className="h-3.5 w-3.5" />
+                      {tenant.document_count ?? 0} doc{(tenant.document_count ?? 0) !== 1 ? "s" : ""}
+                    </div>
+                    <Badge variant={tenant.is_active ? "success" : "secondary"} className="text-[10px]">
+                      {tenant.is_active ? "Active" : "Inactive"}
+                    </Badge>
