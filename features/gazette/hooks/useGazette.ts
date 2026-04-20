@@ -23,3 +23,11 @@ export function useGazetteSearch(query: string) {
     enabled: query.length > 1,
   });
 }
+
+export function useBookmarkGazette() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.post(`/gazette/${id}/bookmark`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["gazette"] }),
+  });
+}

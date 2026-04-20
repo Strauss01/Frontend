@@ -27,6 +27,8 @@ export default function AdminPage() {
   const { data: users,   isLoading: usersLoading   } = useAdminUsers();
   const { data: tenants, isLoading: tenantsLoading } = useAdminTenants();
 
+  const s = stats as any;
+
   const updateRole = useUpdateUserRole();
   const deleteUser = useDeleteUser();
 
@@ -66,26 +68,26 @@ export default function AdminPage() {
             [
               {
                 label: "Total Users",
-                value: stats?.total_users ?? "—",
-                sub:   stats?.users_delta ?? "",
+                value: s?.total_users ?? "—",
+                sub:   s?.users_delta ?? "",
                 icon:  Users,    from: "from-indigo-500", to: "to-violet-600", ring: "ring-indigo-100", bg: "bg-indigo-50",
               },
               {
                 label: "Active Workspaces",
-                value: stats?.total_tenants ?? "—",
-                sub:   stats?.tenants_delta ?? "",
+                value: s?.total_tenants ?? "—",
+                sub:   s?.tenants_delta ?? "",
                 icon:  Building2, from: "from-sky-500", to: "to-cyan-500", ring: "ring-sky-100", bg: "bg-sky-50",
               },
               {
                 label: "Documents Processed",
-                value: stats?.total_documents ?? "—",
-                sub:   stats?.documents_delta ?? "",
+                value: s?.total_documents ?? "—",
+                sub:   s?.documents_delta ?? "",
                 icon:  FileText, from: "from-emerald-500", to: "to-teal-500", ring: "ring-emerald-100", bg: "bg-emerald-50",
               },
               {
                 label: "AI Queries (30d)",
-                value: stats?.ai_queries_30d ?? "—",
-                sub:   stats?.queries_delta ?? "",
+                value: s?.ai_queries_30d ?? "—",
+                sub:   s?.queries_delta ?? "",
                 icon:  Activity, from: "from-amber-500", to: "to-orange-500", ring: "ring-amber-100", bg: "bg-amber-50",
               },
             ].map(({ label, value, sub, icon: Icon, from, to, ring, bg }) => (

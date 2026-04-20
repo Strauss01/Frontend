@@ -9,6 +9,11 @@ export function useSearch(query: string, filters?: Record<string, string>) {
   });
 }
 
+// Alias used by search/page.tsx
+export function useLegalSearch(query: string, filters?: Record<string, string>) {
+  return useSearch(query, filters);
+}
+
 export function useSearchHistory() {
   return useQuery({
     queryKey: ["search", "history"],
