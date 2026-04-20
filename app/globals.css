@@ -5,39 +5,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 @layer base {
-  :root {
-    /* Deep navy + warm gold — legal intelligence palette */
-    --background: 222 47% 6%;
-    --foreground: 210 40% 96%;
-
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 96%;
-
-    --border: 215 28% 17%;
-    --input: 215 28% 14%;
-    --ring: 43 96% 56%;
-
-    --primary: 43 96% 56%;
-    --primary-foreground: 222 47% 6%;
-
-    --secondary: 215 28% 17%;
-    --secondary-foreground: 210 40% 96%;
-
-    --muted: 215 28% 13%;
-    --muted-foreground: 215 20% 55%;
-
-    --accent: 215 28% 15%;
-    --accent-foreground: 210 40% 96%;
-
-    --destructive: 0 63% 50%;
-    --destructive-foreground: 210 40% 96%;
-
+    :root {
+  --bg: 220 30% 6%;
+  --glass: 220 30% 10% / 0.55;
+  --glass-border: 220 40% 30% / 0.25;
+  --accent: 43 96% 56%;
+  --text: 210 40% 96%;
     --radius: 0.5rem;
 
     --font-playfair: "Playfair Display", Georgia, serif;
     --font-dm-sans: "DM Sans", system-ui, sans-serif;
     --font-ibm-mono: "IBM Plex Mono", monospace;
   }
+}
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glow {
+  box-shadow: 0 0 40px rgba(234, 179, 8, 0.15);
 }
 
 @layer base {
@@ -46,12 +34,12 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(43 96% 56% / 0.04) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 80%, hsl(222 80% 30% / 0.08) 0%, transparent 60%);
-    background-attachment: fixed;
-  }
+  background:
+    radial-gradient(circle at 20% 10%, hsl(220 40% 12%), transparent 40%),
+    radial-gradient(circle at 80% 80%, hsl(220 35% 10%), transparent 40%),
+    hsl(var(--bg));
+  color: hsl(var(--text));
+}
 
   h1, h2, h3 {
     @apply font-serif;
