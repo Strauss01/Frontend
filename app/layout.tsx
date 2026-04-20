@@ -4,27 +4,28 @@ import "./globals.css";
 import { Providers } from "@/providers";
 
 /* ─────────────────────────────────────────────
-   FONT LOADING (next/font — zero layout shift)
+   FONTS — variable names must match tailwind.config.ts
+   fontFamily keys: --font-playfair, --font-dm-sans, --font-ibm-mono
 ───────────────────────────────────────────── */
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
-  variable: "--font-serif",
+  variable: "--font-playfair",   // ← was "--font-serif", didn't match config
   display: "swap",
 });
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
-  variable: "--font-sans",
+  variable: "--font-dm-sans",    // ← was "--font-sans", didn't match config
   display: "swap",
 });
 
 const ibmMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
-  variable: "--font-mono",
+  variable: "--font-ibm-mono",   // ← was "--font-mono", didn't match config
   display: "swap",
 });
 
