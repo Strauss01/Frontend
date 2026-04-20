@@ -196,7 +196,7 @@ export default function AdminPage() {
                         </select>
                       </td>
                       <td className="px-4 py-3.5 font-mono text-xs text-slate-500">
-                        {user.tenant_name ?? `Tenant ${user.tenant_id}` ?? "—"}
+                       {user.tenant_name ?? (user.tenant_id ? `Tenant ${user.tenant_id}` : "—")}
                       </td>
                       <td className="px-4 py-3.5 font-mono text-xs text-slate-400">
                         {user.created_at
