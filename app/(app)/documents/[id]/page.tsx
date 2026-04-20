@@ -1,3 +1,4 @@
+import { GlassCard } from "@/components/ui/glass-card";
 import { ReasoningTrace } from "@/components/analysis/reasoning-trace";
 import { ArgumentSimulator } from "@/components/analysis/argument-simulator";
 
