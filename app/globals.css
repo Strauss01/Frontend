@@ -2,61 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─────────────────────────────────────────────
-   LEGAL INTELLIGENCE DESIGN SYSTEM
-   (Westlaw × Palantir inspired)
-   
-   NOTE: @import removed — fonts are loaded via
-   next/font in layout.tsx (zero layout shift,
-   self-hosted, no Google DNS round-trip).
-───────────────────────────────────────────── */
+/*
+ ─────────────────────────────────────────────
+  STATURA — LEGAL INTELLIGENCE DESIGN SYSTEM
+  Light & Lively Edition
+ ─────────────────────────────────────────────
+*/
 
 @layer base {
   :root {
-    /* ── Tailwind semantic tokens (required by shadcn + config) ── */
-    --background:           220 35%  5%;   /* deep navy */
-    --foreground:           210 40% 96%;
+    /* ── Tailwind semantic tokens ── */
+    --background:           220 40% 97%;
+    --foreground:           222 47% 11%;
 
-    --card:                 220 30%  8%;
-    --card-foreground:      210 40% 96%;
+    --card:                 0 0% 100%;
+    --card-foreground:      222 47% 11%;
 
-    --popover:              220 30%  8%;
-    --popover-foreground:   210 40% 96%;
+    --popover:              0 0% 100%;
+    --popover-foreground:   222 47% 11%;
 
-    --primary:               43 96% 56%;   /* gold */
-    --primary-foreground:   220 35%  5%;
+    --primary:              245 82% 58%;    /* vibrant indigo */
+    --primary-foreground:   0 0% 100%;
 
-    --secondary:            220 25% 12%;
-    --secondary-foreground: 210 40% 96%;
+    --secondary:            220 20% 95%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted:                220 25% 12%;
-    --muted-foreground:     210 20% 70%;
+    --muted:                220 20% 95%;
+    --muted-foreground:     220 13% 48%;
 
-    --accent:               217 91% 60%;   /* blue */
-    --accent-foreground:    210 40% 96%;
+    --accent:               245 82% 96%;
+    --accent-foreground:    245 82% 42%;
 
-    --destructive:            0 84% 60%;
-    --destructive-foreground: 210 40% 96%;
+    --destructive:          0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border:               220 20% 14%;
-    --input:                220 20% 14%;
-    --ring:                  43 96% 56%;   /* gold focus ring */
+    --border:               220 16% 90%;
+    --input:                220 16% 92%;
+    --ring:                 245 82% 58%;
 
-    --radius: 0.6rem;
+    --radius: 0.75rem;
 
-    /* ── Internal design tokens (used by custom classes below) ── */
-    --bg:        220 35%  5%;
-    --surface:   220 30%  8%;
-    --surface-2: 220 25% 12%;
+    /* ── Internal design tokens ── */
+    --bg:        220 40% 97%;
+    --surface:   0 0% 100%;
+    --surface-2: 220 20% 95%;
 
-    --text:       210 40% 96%;
-    --text-muted: 210 20% 70%;
-    --text-dim:   210 15% 50%;
+    --text:       222 47% 11%;
+    --text-muted: 220 13% 48%;
+    --text-dim:   220 10% 64%;
 
-    --accent-gold:  43 96% 56%;
-    --accent-blue:  217 91% 60%;
+    --accent-gold:  43 96% 50%;
+    --accent-blue:  245 82% 58%;
     --accent-red:   0 84% 60%;
-    --accent-green: 142 72% 45%;
+    --accent-green: 162 72% 38%;
   }
 
   html {
@@ -67,9 +65,9 @@
   body {
     min-height: 100vh;
     background:
-      radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.18), transparent 45%),
-      radial-gradient(circle at 85% 70%, rgba(234, 179, 8, 0.10), transparent 50%),
-      radial-gradient(circle at 50% 110%, rgba(16, 185, 129, 0.08), transparent 45%),
+      radial-gradient(ellipse 70% 55% at -5% -5%,  rgba(99, 102, 241, 0.13) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 45% at 105%  2%, rgba(245, 158,  11, 0.11) 0%, transparent 50%),
+      radial-gradient(ellipse 55% 50% at 50%  108%, rgba(16, 185, 129, 0.09) 0%, transparent 50%),
       hsl(var(--bg));
     color: hsl(var(--text));
   }
@@ -81,17 +79,25 @@
 }
 
 /* ─────────────────────────────────────────────
-   GLASS SYSTEM (CORE UI SURFACE)
+   GLASS SYSTEM — light frosted surface
 ───────────────────────────────────────────── */
 
 .glass {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 4px 32px rgba(99, 102, 241, 0.07),
+    0 1px 0   rgba(255, 255, 255, 0.90) inset;
+}
+
+.glass-sm {
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.90);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
 }
 
 /* ─────────────────────────────────────────────
@@ -99,34 +105,80 @@
 ───────────────────────────────────────────── */
 
 .layer-authority {
-  border: 1px solid rgba(234, 179, 8, 0.25);
-  box-shadow: 0 0 35px rgba(234, 179, 8, 0.10);
+  border: 1px solid rgba(245, 158, 11, 0.30) !important;
+  box-shadow:
+    0 4px 24px rgba(245, 158, 11, 0.09),
+    0 1px 0 rgba(255, 255, 255, 0.90) inset;
 }
 
 .layer-reasoning {
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  box-shadow: 0 0 35px rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.22) !important;
+  box-shadow:
+    0 4px 24px rgba(99, 102, 241, 0.09),
+    0 1px 0 rgba(255, 255, 255, 0.90) inset;
 }
 
 .layer-risk {
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  box-shadow: 0 0 35px rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.22) !important;
+  box-shadow:
+    0 4px 24px rgba(239, 68, 68, 0.07),
+    0 1px 0 rgba(255, 255, 255, 0.90) inset;
 }
 
 /* ─────────────────────────────────────────────
    GLOW SYSTEM
 ───────────────────────────────────────────── */
 
-.glow-gold { box-shadow: 0 0 40px rgba(234, 179, 8, 0.12); }
-.glow-blue { box-shadow: 0 0 40px rgba(99, 102, 241, 0.12); }
+.glow-gold { box-shadow: 0 0 28px rgba(245, 158, 11, 0.18); }
+.glow-blue { box-shadow: 0 0 28px rgba(99, 102, 241, 0.18); }
+
+/* ─────────────────────────────────────────────
+   CARD SURFACES
+───────────────────────────────────────────── */
+
+.card-surface {
+  background: #ffffff;
+  border: 1px solid hsl(var(--border));
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow:
+    0 4px 20px rgba(99, 102, 241, 0.12),
+    0 1px 4px  rgba(0,  0,   0, 0.06);
+  transform: translateY(-1px);
+  border-color: rgba(99, 102, 241, 0.20);
+}
+
+/* ─────────────────────────────────────────────
+   GRADIENT UTILITIES
+───────────────────────────────────────────── */
+
+.gradient-indigo {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+.gradient-amber {
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+}
+.gradient-emerald {
+  background: linear-gradient(135deg, #10b981 0%, #0891b2 100%);
+}
+.gradient-rose {
+  background: linear-gradient(135deg, #f43f5e 0%, #f97316 100%);
+}
 
 /* ─────────────────────────────────────────────
    TEXT HIERARCHY
 ───────────────────────────────────────────── */
 
-.text-primary   { color: rgba(255, 255, 255, 0.92); }
-.text-secondary { color: rgba(255, 255, 255, 0.68); }
-.text-tertiary  { color: rgba(255, 255, 255, 0.45); }
+.text-primary   { color: rgba(15, 23, 42, 0.93); }
+.text-secondary { color: rgba(15, 23, 42, 0.65); }
+.text-tertiary  { color: rgba(15, 23, 42, 0.42); }
 .text-mono      { font-family: var(--font-ibm-mono), monospace; }
 
 /* ─────────────────────────────────────────────
@@ -134,13 +186,28 @@
 ───────────────────────────────────────────── */
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
 @keyframes shimmer {
   from { transform: translateX(-100%); }
-  to   { transform: translateX(100%); }
+  to   { transform: translateX(100%);  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
 }
 
 /* ─────────────────────────────────────────────
@@ -149,14 +216,19 @@
 
 @layer utilities {
   .animate-in {
-    animation: fade-in 0.45s ease-out forwards;
+    animation: fade-in 0.4s ease-out forwards;
+  }
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out forwards;
+  }
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
   }
 
   .skeleton {
     @apply relative overflow-hidden rounded-lg;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.06);
   }
-
   .skeleton::after {
     content: "";
     position: absolute;
@@ -164,19 +236,31 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.7),
       transparent
     );
     transform: translateX(-100%);
     animation: shimmer 1.6s infinite;
   }
+
+  /* Sidebar active indicator line */
+  .nav-active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 20%;
+    height: 60%;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(to bottom, #4f46e5, #7c3aed);
+  }
 }
 
 /* ─────────────────────────────────────────────
-   SCROLLBAR
+   SCROLLBAR — light
 ───────────────────────────────────────────── */
 
-::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar        { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track  { background: transparent; }
-::-webkit-scrollbar-thumb  { background: rgba(255, 255, 255, 0.08); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.18); }
+::-webkit-scrollbar-thumb  { background: rgba(0,0,0,0.12); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.22); }
