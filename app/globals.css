@@ -1,26 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=IBM+Plex+Mono:wght@400;500&display=swap");
-
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS (LEGAL INTELLIGENCE SYSTEM)
+───────────────────────────────────────────── */
 @layer base {
-    :root {
-  --bg: 220 30% 6%;
-  --glass: 220 30% 10% / 0.55;
-  --glass-border: 220 40% 30% / 0.25;
-  --accent: 43 96% 56%;
-  --text: 210 40% 96%;
+  :root {
+    --bg: 220 30% 6%;
+    --text: 210 40% 96%;
+
+    --glass: 255 255 255 / 0.05;
+    --glass-border: 255 255 255 / 0.08;
+
+    --accent: 43 96% 56%;
     --radius: 0.5rem;
 
     --font-playfair: "Playfair Display", Georgia, serif;
     --font-dm-sans: "DM Sans", system-ui, sans-serif;
     --font-ibm-mono: "IBM Plex Mono", monospace;
   }
+
+  html {
+    font-family: var(--font-dm-sans);
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 20% 10%, hsl(220 40% 12%), transparent 45%),
+      radial-gradient(circle at 80% 80%, hsl(220 35% 10%), transparent 45%),
+      hsl(var(--bg));
+    color: hsl(var(--text));
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-playfair);
+  }
+
+  * {
+    @apply border-border;
+  }
 }
+
+/* ─────────────────────────────────────────────
+   GLASSMORPHISM PRIMITIVES
+───────────────────────────────────────────── */
 .glass {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -28,60 +58,50 @@
   box-shadow: 0 0 40px rgba(234, 179, 8, 0.15);
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-  background:
-    radial-gradient(circle at 20% 10%, hsl(220 40% 12%), transparent 40%),
-    radial-gradient(circle at 80% 80%, hsl(220 35% 10%), transparent 40%),
-    hsl(var(--bg));
-  color: hsl(var(--text));
-}
-
-  h1, h2, h3 {
-    @apply font-serif;
-  }
-}
-
-/* ─── Skeleton shimmer ─────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────────── */
 @layer utilities {
+  .animate-in {
+    animation: fade-in 0.4s ease-out forwards;
+  }
+
   .skeleton {
-    @apply relative overflow-hidden bg-muted rounded;
+    @apply relative overflow-hidden bg-white/5 rounded-lg;
   }
 
   .skeleton::after {
     content: "";
-    @apply absolute inset-0;
+    position: absolute;
+    inset: 0;
     background: linear-gradient(
       90deg,
-      transparent 0%,
-      hsl(215 28% 22% / 0.6) 50%,
-      transparent 100%
+      transparent,
+      rgba(255,255,255,0.08),
+      transparent
     );
-    animation: shimmer 2s infinite;
     transform: translateX(-100%);
-  }
-
-  .animate-in {
-    animation: fade-in 0.4s ease-out forwards;
+    animation: shimmer 1.8s infinite;
   }
 }
 
-/* ─── Scrollbar ─────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   SCROLLBAR (DARK LEGAL UI STYLE)
+───────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: hsl(215 28% 22%);
-  border-radius: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(215 28% 30%);
+  background: rgba(255,255,255,0.15);
 }
