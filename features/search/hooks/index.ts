@@ -1,1 +1,5 @@
-export { useSearch, useSearchResults } from "./useSearch";
+export {
+  useSearch,
+  useSearchHistory,
+  useSaveSearch,
+} from "./useSearch";
