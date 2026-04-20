@@ -1,6 +1,1 @@
-export {
-  useSearch,
-  useLegalSearch,
-  useSearchHistory,
-  useSaveSearch,
-} from "./useSearch";
+export { useSearch, useLegalSearch, useSearchHistory, useSaveSearch } from "./useSearch";
