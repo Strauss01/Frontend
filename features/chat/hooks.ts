@@ -1,3 +1,9 @@
-export const useChat = () => {
-  return { messages: [], input: "", handleInputChange: () => {}, handleSubmit: () => {}, isLoading: false };
-};
+export const useChat = () => ({
+  messages: [] as any[],
+  isLoading: false,
+  sendMessage: (_message: string) => {},
+  reset: () => {},
+  input: "",
+  handleInputChange: () => {},
+  handleSubmit: () => {},
+});
