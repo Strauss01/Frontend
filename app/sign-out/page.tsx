@@ -2,13 +2,13 @@
 
 import { useEffect } from "react";
 import { Scale, Loader2 } from "lucide-react";
-import { useSignOut } from "@/features/auth/hooks";
+import { useLogout } from "@/features/auth/hooks";
 
 export default function SignOutPage() {
-  const signOut = useSignOut();
+  const logout = useLogout();
 
   useEffect(() => {
-    signOut.mutate();
+    logout();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
