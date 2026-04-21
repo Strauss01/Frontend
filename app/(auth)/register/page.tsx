@@ -4,10 +4,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Scale, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { useRegister } from "@/features/auth/hooks";
 
 const schema = z.object({
@@ -36,108 +35,133 @@ export default function RegisterPage() {
   const onSubmit = (values: FormValues) => register_.mutate(values);
 
   return (
-    <div className="space-y-8 animate-in">
-      <div className="space-y-2">
-        <p className="text-xs font-mono text-gold-400 tracking-widest uppercase">
-          Legal Intelligence Platform
-        </p>
-        <h1 className="font-serif text-4xl font-bold text-white">
-          Create account
-        </h1>
-        <p className="text-muted-foreground">
-          Join your firm's Statura workspace
-        </p>
+    <div className="min-h-screen flex items-center justify-center p-8 bg-slate-50 relative overflow-hidden">
+      {/* Background blobs */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-0 right-0 h-[400px] w-[400px] rounded-full bg-indigo-100/60 blur-3xl -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 h-[300px] w-[300px] rounded-full bg-violet-100/50 blur-3xl translate-y-1/2 -translate-x-1/4" />
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <div className="space-y-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="you@firm.com"
-            autoComplete="email"
-            {...register("email")}
-          />
-          {errors.email && (
-            <p className="text-xs text-destructive">{errors.email.message}</p>
-          )}
+      <div className="relative z-10 w-full max-w-[420px]">
+
+        {/* Logo */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 shadow-lg shadow-indigo-200">
+            <Scale className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <span className="font-serif text-xl font-semibold text-slate-900">Statura</span>
+            <p className="font-mono text-[9px] uppercase tracking-widest text-slate-400">SA Legal Intelligence</p>
+          </div>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Minimum 8 characters"
-            autoComplete="new-password"
-            {...register("password")}
-          />
-          {errors.password && (
-            <p className="text-xs text-destructive">
-              {errors.password.message}
-            </p>
-          )}
+        {/* Heading */}
+        <div className="mb-8">
+          <h1 className="font-serif text-3xl font-semibold text-slate-900">Create account</h1>
+          <p className="mt-1.5 text-sm text-slate-500">Join your firm's Statura workspace.</p>
         </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="tenant_id">Tenant ID</Label>
-          <Input
-            id="tenant_id"
-            type="number"
-            placeholder="Your organisation's tenant ID"
-            {...register("tenant_id")}
-          />
-          {errors.tenant_id && (
-            <p className="text-xs text-destructive">
-              {errors.tenant_id.message}
+        {/* Error */}
+        {register_.isError && (
+          <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {(register_.error as Error)?.message ?? "Registration failed. Please try again."}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {/* Email */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-500">
+              Email address
+            </label>
+            <input
+              type="email"
+              placeholder="advocate@chambers.co.za"
+              autoComplete="email"
+              {...register("email")}
+              className={cn(
+                "h-11 w-full rounded-xl border bg-white px-4 text-sm shadow-sm text-slate-900 placeholder:text-slate-300 transition-all duration-200",
+                "focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 hover:border-slate-300",
+                errors.email ? "border-red-300" : "border-slate-200"
+              )}
+            />
+            {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
+          </div>
+
+          {/* Password */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-500">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Minimum 8 characters"
+              autoComplete="new-password"
+              {...register("password")}
+              className={cn(
+                "h-11 w-full rounded-xl border bg-white px-4 text-sm shadow-sm text-slate-900 placeholder:text-slate-300 transition-all duration-200",
+                "focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 hover:border-slate-300",
+                errors.password ? "border-red-300" : "border-slate-200"
+              )}
+            />
+            {errors.password && <p className="text-xs text-red-600">{errors.password.message}</p>}
+          </div>
+
+          {/* Tenant ID */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-500">
+              Tenant ID
+            </label>
+            <input
+              type="number"
+              placeholder="Your organisation's tenant ID"
+              {...register("tenant_id")}
+              className={cn(
+                "h-11 w-full rounded-xl border bg-white px-4 text-sm shadow-sm text-slate-900 placeholder:text-slate-300 transition-all duration-200",
+                "focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 hover:border-slate-300",
+                errors.tenant_id ? "border-red-300" : "border-slate-200"
+              )}
+            />
+            {errors.tenant_id && <p className="text-xs text-red-600">{errors.tenant_id.message}</p>}
+            <p className="text-xs text-slate-400">
+              Ask your administrator for your tenant ID.
             </p>
-          )}
-          <p className="text-xs text-muted-foreground">
-            Ask your administrator for your tenant ID, or{" "}
-            <Link href="/tenant" className="text-gold-400 hover:underline">
-              create a new workspace
-            </Link>
-            .
+          </div>
+
+          {/* Role */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-500">
+              Role <span className="text-slate-300">(optional)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="member"
+              {...register("role")}
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm shadow-sm text-slate-900 placeholder:text-slate-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 hover:border-slate-300"
+            />
+          </div>
+
+          <Button type="submit" className="h-11 w-full" disabled={register_.isPending}>
+            {register_.isPending
+              ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating account…</>
+              : <>Create account <ArrowRight className="h-4 w-4" /></>}
+          </Button>
+        </form>
+
+        <p className="mt-6 text-center text-xs text-slate-400">
+          Already have an account?{" "}
+          <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors">
+            Sign in
+          </Link>
+        </p>
+
+        <div className="mt-8 flex items-center justify-center gap-2 text-slate-300">
+          <ShieldCheck className="h-3.5 w-3.5" />
+          <p className="font-mono text-[10px] uppercase tracking-widest">
+            POPIA compliant · Hosted in South Africa
           </p>
         </div>
-
-        <div className="space-y-1.5">
-          <Label htmlFor="role">Role (optional)</Label>
-          <Input
-            id="role"
-            type="text"
-            placeholder="e.g. member, admin"
-            {...register("role")}
-          />
-        </div>
-
-        <Button
-          type="submit"
-          className="w-full"
-          size="lg"
-          disabled={register_.isPending}
-        >
-          {register_.isPending ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Creating account…
-            </>
-          ) : (
-            "Create account"
-          )}
-        </Button>
-      </form>
-
-      <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
-        <Link
-          href="/login"
-          className="text-gold-400 hover:text-gold-300 transition-colors underline underline-offset-4"
-        >
-          Sign in
-        </Link>
-      </p>
+      </div>
     </div>
   );
 }
