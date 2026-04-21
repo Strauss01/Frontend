@@ -1,6 +1,2 @@
-export const useCaseLaw = () => {
-  return { data: [], isLoading: false };
-};
-export const useBookmarkCase = () => {
-  return { mutate: () => {}, isLoading: false };
-};
+export const useCaseLaw = () => ({ data: [] as any[], isLoading: false, mutate: (_data?: unknown) => {} });
+export const useBookmarkCase = () => ({ mutate: (_id: string) => {}, isLoading: false });
