@@ -74,7 +74,7 @@ const STATUS_CONFIG: Record<string, {
   warning:  { badge: "warning",     dot: "bg-amber-500",   label: "Attention", bg: "bg-amber-50",   border: "border-amber-100",   text: "text-amber-700"   },
   error:    { badge: "destructive", dot: "bg-red-500",     label: "Flag",      bg: "bg-red-50",     border: "border-red-100",     text: "text-red-700"     },
   pending:  { badge: "secondary",   dot: "bg-slate-300",   label: "Pending",   bg: "bg-slate-50",   border: "border-slate-200",   text: "text-slate-500"   },
-  running:  { badge: "pending",     dot: "bg-indigo-400",  label: "Running",   bg: "bg-indigo-50",  border: "border-indigo-100",  text: "text-indigo-600"  },
+  running:  { badge: "secondary",   dot: "bg-indigo-400",  label: "Running",   bg: "bg-indigo-50",  border: "border-indigo-100",  text: "text-indigo-600"  },
 };
 
 export default function DiligencePage() {
