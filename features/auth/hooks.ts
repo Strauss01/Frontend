@@ -24,16 +24,24 @@ export function useLogin() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (payload: LoginPayload) => authApi.login(payload),
+    mutationFn: authApi.login,
+
     onSuccess: async (data) => {
       persistToken(data.access_token);
-      // Bootstrap user data into cache
-      await queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.auth.me(),
+      });
+
       toast.success("Welcome back");
       router.push("/dashboard");
     },
-    onError: (error: Error) => {
-      toast.error(error.message ?? "Login failed");
+
+    onError: (error: unknown) => {
+      const message =
+        error instanceof Error ? error.message : "Login failed";
+
+      toast.error(message);
     },
   });
 }
