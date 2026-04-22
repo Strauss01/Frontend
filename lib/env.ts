@@ -14,5 +14,5 @@ function requireEnv(key: string): string {
 }
 
 export const env = {
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000",
+  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://statura-th6b.onrender.com",
 } as const;
